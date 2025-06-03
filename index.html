@@ -2,6 +2,18 @@
 <html lang="en">
 
 <head>
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "5d8de47d216a47aea0ecdbcd0e20e168",
+      application: "lab-9-error-log"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+    </script> 
+
+
+
+
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -68,6 +80,7 @@
       </fieldset>
     </form>
 
+    <!--
     <section id="error-btns">
       <button>Console Log</button>
       <button>Console Error</button>
@@ -84,6 +97,26 @@
       <button>End Timer</button>
       <button>Console Trace</button>
       <button>Trigger a Global Error</button>
+    </section>
+  -->
+    <section id="error-btns">
+      <button id="log">Console Log</button>
+      <button id="error">Console Error</button>
+      <button id="count">Console Count</button>
+      <button id="warn">Console Warn</button>
+      <button id="assert">Console Assert</button>
+      <button id="clear">Console Clear</button>
+      <button id="dir">Console Dir</button>
+      <button id="dirxml">Console dirxml</button>
+      <button id="group">Console Group Start</button>
+      <button id="groupEnd">Console Group End</button>
+      <button id="table">Console Table</button>
+      <button id="startTimer">Start Timer</button>
+      <button id="endTimer">End Timer</button>
+      <button id="trace">Console Trace</button>
+      <button id="globalError">Trigger a Global Error</button>
+      <button id="tryCatch">Try/Catch Example</button> <!--Optional line of new button: step 3-->
+      <button id="customError">Throw Custom Error</button><!--Addded this for step 4-->
     </section>
   </main>
 
@@ -102,6 +135,136 @@
 
     // Start your code here
     // You may move this JS to another file if you wish
+    //Step 5:
+      window.onerror = function (message, source, lineno, colno, error) {
+        console.log("Global error caught by window.onerror:");
+        console.log("Message:", message);
+        console.log("Source:", source);
+        console.log("Line:", lineno, "Column:", colno);
+        console.log("Error Object:", error);
+    }; //End of step 5
+
+
+
+    //Step 2
+      document.getElementById("log").addEventListener("click", () => {
+        console.log("This is a log message");
+      });
+
+      document.getElementById("error").addEventListener("click", () => {
+        console.error("This is an error message");
+      });
+
+      document.getElementById("count").addEventListener("click", () => {
+        console.count("Count button clicked");
+      });
+
+      document.getElementById("warn").addEventListener("click", () => {
+        console.warn("This is a warning");
+      });
+
+      document.getElementById("assert").addEventListener("click", () => {
+        const x = 5;
+        const y = 10;
+        console.assert(x > y, "Assertion failed: x is not greater than y");
+      });
+
+      document.getElementById("clear").addEventListener("click", () => {
+        console.clear();
+      });
+
+      document.getElementById("dir").addEventListener("click", () => {
+        console.dir(document.body);
+      });
+
+      document.getElementById("dirxml").addEventListener("click", () => {
+        console.dirxml(document.body);
+      });
+
+      document.getElementById("group").addEventListener("click", () => {
+        console.group("Group Start");
+        console.log("Inside group");
+      });
+
+      document.getElementById("groupEnd").addEventListener("click", () => {
+        console.groupEnd();
+      });
+
+      document.getElementById("table").addEventListener("click", () => {
+        const people = [
+          { name: "Alice", age: 20 },
+          { name: "Bob", age: 25 }
+        ];
+        console.table(people);
+      });
+
+      document.getElementById("startTimer").addEventListener("click", () => {
+        console.time("Timer");
+      });
+
+      document.getElementById("endTimer").addEventListener("click", () => {
+        console.timeEnd("Timer");
+      });
+
+      document.getElementById("trace").addEventListener("click", () => {
+        function funcA() {
+          funcB();
+        }
+        function funcB() {
+          console.trace("Trace called");
+        }
+        funcA();
+      });
+
+  //Step 3
+      document.getElementById("tryCatch").addEventListener("click", () => {
+        try {
+          // Simulate DOM error
+          let fakeElement = document.querySelector("#nonexistent-element");
+          fakeElement.innerHTML = "This will cause an error";
+        } catch (err) {
+          console.error("Caught an error in try/catch block:", err);
+        } finally {
+          console.log("This always runs — even after an error.");
+        }
+      });
+
+
+  //Step 4
+            // Define your own custom error type
+    class CustomInputError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "CustomInputError";
+      }
+    }
+
+    // Hook it up to the button
+    document.getElementById("customError").addEventListener("click", () => {
+      try {
+        let num = document.querySelector('#first-num').value;
+
+        if (!num || isNaN(num)) {
+          throw new CustomInputError("Input must be a valid number!");
+        }
+
+        console.log("Input is valid:", num);
+      } catch (err) {
+        if (err instanceof CustomInputError) {
+          console.error("CustomInputError caught:", err.message);
+        } else {
+          console.error("Unexpected error:", err);
+        }
+      }
+    });
+
+
+      //Step 5
+        document.getElementById("globalError").addEventListener("click", () => {
+      // This throws an error not inside try/catch
+      nonExistentFunctionCall(); // BOOM! global error
+    });
+
   </script>
 </body>
 
